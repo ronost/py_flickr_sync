@@ -15,11 +15,10 @@ def main():
     parser.add_argument('-k', '--api_key', help='API key provided by flickr.', required=True)
     parser.add_argument('-s', '--api_secret', help='API secret provided by flickr.', required=True)
 
-    auth_file_name = '.flickr_auth'
-
     args = parser.parse_args()
 
     if args.api_key and args.api_secret:
+        auth_file_name = '.flickr_auth'
         f.set_keys(api_key = args.api_key, api_secret = args.api_secret) 
         auth_handler = f.auth.AuthHandler()
         url = auth_handler.get_authorization_url('write')
