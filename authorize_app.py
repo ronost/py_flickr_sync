@@ -1,6 +1,8 @@
 #!/usr/bin/python
 import argparse
 import flickr_api as f
+import os
+import stat
 
 def main():
     parser = argparse.ArgumentParser(description='''Takes flickr API key and secret in order to create an access token file. \n
@@ -12,6 +14,8 @@ def main():
                                                 prompted.''')
     parser.add_argument('-k', '--api_key', help='API key provided by flickr.', required=True)
     parser.add_argument('-s', '--api_secret', help='API secret provided by flickr.', required=True)
+
+    auth_file_name = '.flickr_auth'
 
     args = parser.parse_args()
 
@@ -28,8 +32,14 @@ def main():
             pass
         oauth_verifier = input('\nOauth_verifier: ')
         auth_handler.set_verifier(oauth_verifier)
-        auth_handler.save('access_token')
-        print 'Access token file saved as file: access_token'
+
+        home_dir = os.path.expanduser('~')
+        auth_file = os.path.join(home_dir, auth_file_name)
+        auth_handler.save(auth_file, include_api_keys = True)
+        #Set filepermissions to 0600.
+        os.chmod(auth_file, stat.S_IRUSR | stat.S_IWUSR)
+
+        print 'Access token and key/secret is saved in file: %s' % auth_file
 
 if __name__ == "__main__":
     main()
